@@ -1,13 +1,26 @@
+
 package GLescroel.myGames;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+/**
+ * Classe Interaction
+ * contient des fonctions "outils" pour gérer les interactions avec l'utilisateur, notamment ses saisies attendues
+ */
 public class Interaction {
 
+    /**
+     * ask someThing()
+     * @param category =  catégorie de la demande (jeu, mode)
+     * @param responses = la liste des réponses possibles
+     * @return le numéro de la réponse dans la liste
+     */
     public static int askSomething(String category, String[] responses) {
 
-        System.out.println("Choix du " + category);
+                System.out.println("Choix du " + category);
 
         for (int i = 1; i <= responses.length; i++)
             System.out.println(i + " - " + responses[i - 1]);
@@ -47,7 +60,9 @@ public class Interaction {
 
     /**
      * Permet de récupérer le nombre saisi par le joueur pour une donnée
-     * @param String requestedValue (nbCar ou nbTry), int minValue, int maxValue
+     * @param  requestedValue (nbCar ou nbTry), int minValue, int maxValue
+     * @param minValue valeur minimale de la proposition
+     * @param maxValue valeur maximale de la proposition
      * @return le nombre saisi par le joueur
      */
     public static int askQuantity(String requestedValue, int minValue, int maxValue) {
@@ -80,6 +95,11 @@ public class Interaction {
         return responseNb;
     }
 
+    /**
+     * sakText() = demande à l'utilisateur de saisir un texte (prénom)
+     * @param category = texte demandé
+     * @return String de la réponse
+     */
     public static String askText(String category) {
 
         System.out.println("Choix du " + category);
@@ -108,6 +128,52 @@ public class Interaction {
         } while (responseIsGood == false);
 
         return response;
+    }
+
+    /**
+     * askCombinaison() demande au joueur de saisir une combinaison numérique de longueur nbDigit
+     * @param nbDigit nombre de caractères de la combinaison
+     * @return String[] la combinaison saisie par le joueur
+     * @see Joueur#joueurProposeCombi
+     */
+    public static String[] askCombinaison(int nbDigit){
+        String[] enteredString = new String[nbDigit];
+
+        System.out.println("Saisissez une combinaison de " + nbDigit + " chiffres : " );
+
+        String responseNb="";
+        boolean responseIsGood = false;
+        do {
+            Scanner sc = new Scanner(System.in);
+            try {
+                responseNb = sc.next();
+
+                // compilation de la regex
+                Pattern p = Pattern.compile("[0-9]{"+ nbDigit+"}");
+                // création d'un moteur de recherche
+                Matcher m = p.matcher(responseNb);
+                // lancement de la recherche de toutes les occurrences
+                responseIsGood = m.matches();
+                // si recherche fructueuse
+                if(responseIsGood) {
+                    // pour chaque groupe (ici un seul possible car même longueur)
+                    for(int i=0; i <= m.groupCount(); i++) {
+                        // affichage de la sous-chaîne captu1rée
+                        System.out.println("Votre saisie   : " + m.group(i));
+                    }
+                    for(int i=0; i <= (responseNb.length()-1); i++)
+                        enteredString[i] = String.valueOf(responseNb.charAt(i));
+                }else System.out.println("Votre saisie est incorrecte");
+
+            }catch (InputMismatchException exception){
+                System.out.println("Erreur de saisie");
+                sc.next();
+                responseIsGood = false;}
+
+        } while (responseIsGood == false);
+
+        return enteredString;
+
     }
 
 

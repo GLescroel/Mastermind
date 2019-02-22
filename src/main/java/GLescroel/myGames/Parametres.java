@@ -7,6 +7,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe Parametres permet la récupération des paramètres de jeu dans le fichier de paramètres
+ */
 public class Parametres {
 
     private List<String> parametresFichier = new ArrayList<String>();
@@ -20,32 +23,24 @@ public class Parametres {
 
 
     //////////// GETTER & SETTER /////////////////////////////////////
-    public List<String> getJeuxPossibles() {
-        return jeuxPossibles;
-    }
-
-    public List<String> getModesPossibles() {
-        return modesPossibles;
-    }
-
-    public int getNbDigitMinPossible() {
-        return nbDigitMinPossible;
-    }
-
-    public int getNbDigitMaxPossible() {
-        return nbDigitMaxPossible;
-    }
-
-    public int getNbEssaisMinPossible() {
-        return nbEssaisMinPossible;
-    }
-
-    public int getNbEssaisMaxPossible() {
-        return nbEssaisMaxPossible;
-    }
+    public List<String> getJeuxPossibles() { return jeuxPossibles; }
+    public List<String> getModesPossibles() { return modesPossibles; }
+    public int getNbDigitMinPossible() { return nbDigitMinPossible; }
+    public int getNbDigitMaxPossible() { return nbDigitMaxPossible; }
+    public int getNbEssaisMinPossible() { return nbEssaisMinPossible; }
+    public int getNbEssaisMaxPossible() { return nbEssaisMaxPossible; }
     //////////// fin GETTER & SETTER /////////////////////////////////////
 
 
+    /**
+     * runInit() lance la récupération des différents paramètres
+     *@see Parametres#getParameters
+     *@see Parametres#getListeJeuxPossibles
+     *@see Parametres#getListeModesPossibles
+     *@see Parametres#getNbDigitPossibles
+     *@see Parametres#getNbEssaisPossibles
+     *@see Parametres#getRunMode
+     */
     public void runInit(){
         getParameters();
         getListeJeuxPossibles();
@@ -55,6 +50,9 @@ public class Parametres {
         getRunMode();
     }
 
+    /**
+     * getParameters() récupère toutes les lignes du fichier paramètres
+     */
     public void getParameters(){
 
         String filename = "myGames.properties";
@@ -74,6 +72,9 @@ public class Parametres {
             System.out.println("Le fichier paramètres est vide !");
     }
 
+    /**
+     * getListeJeuxPossibles() récupère la liste des jeux
+     */
     public void getListeJeuxPossibles(){
 
         if(parametresFichier.size() == 0)
@@ -92,6 +93,9 @@ public class Parametres {
         }*/
     }
 
+    /**
+     * getListeModesPossibles() récupère les différents modes possibles
+     */
     public void getListeModesPossibles(){
 
         if(parametresFichier.size() == 0)
@@ -110,6 +114,9 @@ public class Parametres {
         }*/
     }
 
+    /**
+     * getNbDigitPossibles() récupère le nombre de caractères min et max possibles pour jouer
+     */
     public void getNbDigitPossibles(){
 
         if(parametresFichier.size() == 0)
@@ -126,6 +133,9 @@ public class Parametres {
         //System.out.println("nb digit min possible : " + nbDigitMinPossible + " \\ nb digit max possible : " + nbDigitMaxPossible);
     }
 
+    /**
+     * getNbEssaisPossibles() récupère le nombre d'essais min et max possibles pour jouer
+     */
     public void getNbEssaisPossibles(){
 
         if(parametresFichier.size() == 0)
@@ -142,6 +152,9 @@ public class Parametres {
         //System.out.println("nb essais min possible : " + nbEssaisMinPossible + " \\ nb essais max possible : " + nbEssaisMaxPossible);
     }
 
+    /**
+     * getRunMode() récupère le mode d'exécution du jeu (dev, debug, prod)
+     */
     public void getRunMode(){
 
         if(parametresFichier.size() == 0)

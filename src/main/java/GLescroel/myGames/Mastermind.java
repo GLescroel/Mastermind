@@ -4,24 +4,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * Classe Mastermind étend la Classe abstraite Jeu
+ * contient le déroulé et les méthodes spécifiques du jeu MasterMind
+ */
 public class Mastermind extends Jeu {
-
-    String mode;
-    int nbDigit;
-    int nbEssai;
-    JoueurOrdi ordi;
-    JoueurHumain joueur;
 
     private List<String[]> listeDesPossibles = new ArrayList<>();
 
-    public Mastermind(JoueurHumain joueur, JoueurOrdi ordi, String mode, int nbDigit, int nbEssai) {
-        this.mode = mode;
-        this.nbDigit = nbDigit;
-        this.nbEssai = nbEssai;
-        this.joueur = joueur;
-        this.ordi = ordi;
+    /**
+     * PlusMoins() constructor de la classe MasterMind
+     * @param nomJeu nom du jeu
+     * @param joueur joueur humain
+     * @param ordi joueur ordinateur
+     * @param mode mode de jeu
+     * @param nbDigit nombre de caractères des combinaisons
+     * @param nbEssai nombre d'essais max pour trouver la solution
+     */
+    /////Constructor
+    public Mastermind (String nomJeu, JoueurHumain joueur, JoueurOrdi ordi, String mode, int nbDigit, int nbEssai) {
+        super(nomJeu, joueur, ordi, mode, nbDigit, nbEssai);
     }
 
+    /**
+     * runMasterMind() exécute le jeu MasterMind
+      */
     public void runMastermind(){
 
         if(mode.equals("Defenseur"))
@@ -32,10 +39,13 @@ public class Mastermind extends Jeu {
             runMasterMindDuel();
         }
 
-        affichageResultat(joueur, ordi);
-
+        affichageResultat(joueur, ordi, mode);
     }
 
+    /**
+     * runMasterMindDefenseur() exécute le jeu MasterMind en mode défenseur
+     * L'ordinateur doit deviner la combinaison secrète du joueur
+     */
     public void runMasterMindDefenseur(){
 
         initListePossibles();
@@ -54,6 +64,10 @@ public class Mastermind extends Jeu {
     }
 
 
+    /**
+     * runMasterMindChallenger() exécute le jeu MasterMind en mode challenger
+     * Le joueur doit deviner la combinaison secrète de l'ordinateur
+     */
     public void runMasterMindChallenger() {
 
         ordi.setCombinaisonSecrete(ordi.joueurChoisitCombiSecrete(nbDigit));
@@ -67,6 +81,10 @@ public class Mastermind extends Jeu {
         System.out.println("Nombre de tentatives : " + essai);
     }
 
+    /**
+     * runMasterMindDuel() exécute le jeu MasterMind en mode duel
+     * Les joueurs ordinateur et humain doivent deviner la combinaison secrète de l'autre joueur en premier
+     */
     public void runMasterMindDuel() {
 
         initListePossibles();
@@ -89,6 +107,10 @@ public class Mastermind extends Jeu {
         System.out.println("Nombre de tentatives : " + (essai));
     }
 
+    /**
+     * initListePossibles() crée la liste de toutes les combinaisons MAsterMind possibles
+     * en base 10 et en fonction du nombre de caractères de la combinaison
+     */
     public void initListePossibles(){
         String valueMaxString = "";
         for(int v = 0 ; v < nbDigit ; v++)
@@ -132,6 +154,13 @@ public class Mastermind extends Jeu {
 
     }
 
+    /**
+     * evaluerMasterMindProposition() évalue la proposition MasterMind en fonction de la combinaison secrète
+     * @param secretValue combinaison secrète du défenseur
+     * @param tryValue combinaison proposée par le challenger
+     * @param result résultat de l'évaluation (nb bien placés, nb présents mal placés)
+     * @return boolean allGood qui indique si tout est bien placé ou non
+     */
     private boolean evaluerMasterMindProposition(String[] secretValue, String[] tryValue, String[] result) {
 
         boolean allGood = true;
@@ -166,7 +195,13 @@ public class Mastermind extends Jeu {
 
     }
 
-
+    /**
+     * updateListeDesPossibles() met à jour la liste des combinaisons possibles
+     * en fonction de l'évaluation de la dernière proposition de l'ordinateur,
+     * par supression des combinaisons qui ne sont plus possibles
+     * @param ordiProposition la proposition de l'ordinateur
+     * @param previousResult le résultat de l'évaluation de cette proposition
+     */
     public void updateListeDesPossibles(String[] ordiProposition, String[] previousResult) {
 
         List<Integer> indexToDelete = new CopyOnWriteArrayList<Integer>();
@@ -261,7 +296,6 @@ public class Mastermind extends Jeu {
         System.out.println("nb deletions : " + indexToDelete.size());
         System.out.println("nb possibles restants : " + listeDesPossibles.size());
     }
-
 
 
 }
