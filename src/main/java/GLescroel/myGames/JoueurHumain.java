@@ -7,9 +7,7 @@ package GLescroel.myGames;
 public class JoueurHumain extends Joueur {
 
     // CONSTRUCTOR
-    public JoueurHumain(String nomJoueur) {
-        this.setEstHumain(true);
-        this.setNomJoueur(nomJoueur);
+    public JoueurHumain() {
         setCombinaisonTrouvee(false);
     }
 
@@ -17,23 +15,23 @@ public class JoueurHumain extends Joueur {
      * joueurChoisitCombiSecrete() = le joueur choisit sa combinaison secrète
      * @param nbDigit nombre de caractères de la combinaison
      * @return String[] combinaison proposée par le joueur
-     * @see Joueur#joueurProposeCombi(int)
+     * @see Joueur#joueurProposeCombi(int, int)
      */
     @Override
-    protected String[] joueurChoisitCombiSecrete(int nbDigit){
+    protected String[] joueurChoisitCombiSecrete(int nbDigit, int nbValeur){
         System.out.println("Choisissez votre combinaison secrète : ");
-        return joueurProposeCombi(nbDigit);
+        return joueurProposeCombi(nbDigit, nbValeur);
     }
 
     /**
      * joueurProposeCombi() = le joueur saisit une combinaison (pour proposition ou définition de sa combinaison secrète)
      * @param nbDigit nombre de caractères de la combinaison
      * @return String[] combinaison saisie par le joueur
-     * @see Interaction#askCombinaison(int) askCombinaison()
+     * @see Interaction#askCombinaison(int, int)
      */
     @Override
-    protected String[] joueurProposeCombi(int nbDigit){
-        return Interaction.askCombinaison(nbDigit);
+    protected String[] joueurProposeCombi(int nbDigit, int nbValeur){
+        return Interaction.askCombinaison(nbDigit, nbValeur);
     }
 
 }

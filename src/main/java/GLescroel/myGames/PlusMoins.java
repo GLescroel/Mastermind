@@ -29,11 +29,11 @@ public class PlusMoins extends Jeu {
      */
     public void runPlusMoins(){
 
-        if(mode.equals("Defenseur"))
+        if(mode.equals(modeDefenseur))
             runPlusMoinsDefenseur();
-        else if(mode.equals("Challenger"))
+        else if(mode.equals(modeChallenger))
             runPlusMoinsChallenger();
-        else if(mode.equals("Duel")) {
+        else if(mode.equals(modeDuel)) {
             runPlusMoinsDuel();
         }
 
@@ -45,7 +45,7 @@ public class PlusMoins extends Jeu {
      */
     public void runPlusMoinsDefenseur() {
 
-        joueur.setCombinaisonSecrete(joueur.joueurChoisitCombiSecrete(nbDigit));
+        joueur.setCombinaisonSecrete(joueur.joueurChoisitCombiSecrete(nbDigit, 10));
 
         List<String[]> TryList = new CopyOnWriteArrayList<String[]>();
         String[] previousResult = new String[nbDigit];
@@ -53,7 +53,7 @@ public class PlusMoins extends Jeu {
         int essai = 0;
         do {
             TryList.add(ordi.ordiProposeCombiPlusMoins(TryList, previousResult, nbDigit));
-            ordi.setCombinaisonTrouvee(evaluerPlusMoinsPropositionOrdi(joueur.getCombinaisonSecrete(), TryList.get(essai), previousResult));
+            ordi.setCombinaisonTrouvee(evaluerPlusMoinsProposition(joueur.getCombinaisonSecrete(), TryList.get(essai), previousResult));
             essai++;
         } while (essai < nbEssai && !ordi.isCombinaisonTrouvee());
         System.out.println("Nombre de tentatives : " + essai);
@@ -65,11 +65,11 @@ public class PlusMoins extends Jeu {
      */
     public void runPlusMoinsChallenger() {
 
-        ordi.setCombinaisonSecrete(ordi.joueurChoisitCombiSecrete(nbDigit));
+        ordi.setCombinaisonSecrete(ordi.joueurChoisitCombiSecrete(nbDigit, 10));
 
         int essai = 0;
         do {
-            joueur.setCombinaisonTrouvee(evaluerPlusMoinsPropositionJoueur(ordi.getCombinaisonSecrete(), joueur.joueurProposeCombi(nbDigit)));
+            joueur.setCombinaisonTrouvee(evaluerPlusMoinsProposition(ordi.getCombinaisonSecrete(), joueur.joueurProposeCombi(nbDigit, 10), null));
             essai++;
         } while (essai < nbEssai && !joueur.isCombinaisonTrouvee());
         System.out.println("Nombre de tentatives : " + essai);
@@ -81,18 +81,18 @@ public class PlusMoins extends Jeu {
      */
     public void runPlusMoinsDuel() {
 
-        joueur.setCombinaisonSecrete(joueur.joueurChoisitCombiSecrete(nbDigit));
-        ordi.setCombinaisonSecrete(ordi.joueurChoisitCombiSecrete(nbDigit));
+        joueur.setCombinaisonSecrete(joueur.joueurChoisitCombiSecrete(nbDigit, 10));
+        ordi.setCombinaisonSecrete(ordi.joueurChoisitCombiSecrete(nbDigit, 10));
 
         List<String[]> TryList = new CopyOnWriteArrayList<String[]>();
         String[] previousResult = new String[nbDigit];
 
         int essai = 0;
         do {
-            joueur.setCombinaisonTrouvee(evaluerPlusMoinsPropositionJoueur(ordi.getCombinaisonSecrete(), joueur.joueurProposeCombi(nbDigit)));
+            joueur.setCombinaisonTrouvee(evaluerPlusMoinsProposition(ordi.getCombinaisonSecrete(), joueur.joueurProposeCombi(nbDigit, 10), null));
 
             TryList.add(ordi.ordiProposeCombiPlusMoins(TryList, previousResult, nbDigit));
-            ordi.setCombinaisonTrouvee(evaluerPlusMoinsPropositionOrdi(joueur.getCombinaisonSecrete(), TryList.get(essai), previousResult));
+            ordi.setCombinaisonTrouvee(evaluerPlusMoinsProposition(joueur.getCombinaisonSecrete(), TryList.get(essai), previousResult));
 
             essai++;
         } while (essai < nbEssai && !joueur.isCombinaisonTrouvee() && !ordi.isCombinaisonTrouvee());
@@ -102,75 +102,42 @@ public class PlusMoins extends Jeu {
     }
 
     /**
-     * evaluerPlusMoinsPropositionJoueur() évalue la combinaison proposée par le joueur
-     * @param secretValue de l'ordinateur
-     * @param tryValue la proposition du joueur
-     * @return boolean indiquant si le joueur a trouvé ou non
+     * evaluerPlusMoinsProposition() évalue la combinaison proposée par l'ordinateur ou le joueur
+     * @param secretValue du joueur ou de l'ordinateur
+     * @param tryValue la proposition du joueur ou de l'ordinateur
+     * @param tryResult l'évaluation à mettre à jour pour l'ordinateur
+     * @return boolean qui indique si le joueur ou l'ordinateur a trouvé ou non
      */
-    public static boolean evaluerPlusMoinsPropositionJoueur(String[] secretValue, String[] tryValue) {
+    public static boolean evaluerPlusMoinsProposition(String[] secretValue, String[] tryValue, String[] tryResult) {
 
-        String tryResult = "";
+        String tryResultString = "";
+        String resultatCaractere ="";
         boolean allGood = true;
         for(int i = 0 ; i < tryValue.length; i++)
         {
-            if(Integer.valueOf(secretValue[i]/*.toString()*/) == Integer.valueOf(tryValue[i]/*.toString()*/))
-                tryResult += "=";
-            else if(Integer.valueOf(secretValue[i]/*.toString()*/) > Integer.valueOf(tryValue[i]/*.toString()*/))
+            if(Integer.valueOf(secretValue[i]) == Integer.valueOf(tryValue[i]))
+                resultatCaractere = "=";
+            else if(Integer.valueOf(secretValue[i]) > Integer.valueOf(tryValue[i]))
             {
-                tryResult += "+";
+                resultatCaractere = "+";
                 allGood = false;
             }
             else
             {
-                tryResult += "-";
+                resultatCaractere = "-";
                 allGood = false;
             }
+            tryResultString += resultatCaractere;
+            if(tryResult != null)
+                tryResult[i] = resultatCaractere;
         }
 
-        System.out.println("Votre résultat : " + tryResult);
+        if(tryResult == null)
+            System.out.println("Votre résultat : " + tryResultString);
+        else
+            System.out.println("Résultat de l'ordinateur    : " + tryResultString);
 
         return allGood;
     }
-
-    /**
-     * evaluerPlusMoinsPropositionOrdi() évalue la combinaison proposée par l'ordinateur
-     * @param secretValue du joueur
-     * @param tryValue la proposition de l'ordinateur
-     * @param tryResult l'évaluation à mettre à jour
-     * @return boolean qui indique si l'ordinateur a trouvé ou non
-     */
-    public static boolean evaluerPlusMoinsPropositionOrdi(String[] secretValue, String[] tryValue, String[] tryResult) {
-
-        /*String aff = "";
-        for(int i = 0; i < (tryValue.length); i++)
-            aff += tryValue[i];
-        System.out.println("test : " + aff + " length : " + (tryValue.length));*/
-
-        boolean allGood = true;
-        for(int i = 0 ; i < tryValue.length; i++)
-        {
-            if(Integer.valueOf(secretValue[i].toString()) == Integer.valueOf(tryValue[i].toString()))
-                tryResult[i] = "=";
-            else if(Integer.valueOf(secretValue[i].toString()) > Integer.valueOf(tryValue[i].toString()))
-            {
-                tryResult[i] = "+";
-                allGood = false;
-            }
-            else
-            {
-                tryResult[i] = "-";
-                allGood = false;
-            }
-        }
-
-        String affichage = "";
-        for(int i = 0; i < tryResult.length; i++)
-            affichage += tryResult[i];
-        System.out.println("Résultat  : " + affichage);
-
-        return allGood;
-    }
-
-
 
 }

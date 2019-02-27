@@ -17,9 +17,11 @@ public class Parametres {
     private List<String> modesPossibles = new ArrayList<String>();
     private int nbDigitMinPossible;
     private int nbDigitMaxPossible;
+    private int nbValeursMinPossible;
+    private int nbValeursMaxPossible;
     private int nbEssaisMinPossible;
     private int nbEssaisMaxPossible;
-    private String runMode;
+    private static String runMode;
 
 
     //////////// GETTER & SETTER /////////////////////////////////////
@@ -27,10 +29,12 @@ public class Parametres {
     public List<String> getModesPossibles() { return modesPossibles; }
     public int getNbDigitMinPossible() { return nbDigitMinPossible; }
     public int getNbDigitMaxPossible() { return nbDigitMaxPossible; }
+    public int getNbValeursMinPossible() { return nbValeursMinPossible; }
+    public int getNbValeursMaxPossible() { return nbValeursMaxPossible; }
     public int getNbEssaisMinPossible() { return nbEssaisMinPossible; }
     public int getNbEssaisMaxPossible() { return nbEssaisMaxPossible; }
+    public static String getRunMode() { return runMode; }
     //////////// fin GETTER & SETTER /////////////////////////////////////
-
 
     /**
      * runInit() lance la récupération des différents paramètres
@@ -46,8 +50,9 @@ public class Parametres {
         getListeJeuxPossibles();
         getListeModesPossibles();
         getNbDigitPossibles();
+        getNbValeursPossibles();
         getNbEssaisPossibles();
-        getRunMode();
+        readRunMode();
     }
 
     /**
@@ -55,7 +60,7 @@ public class Parametres {
      */
     public void getParameters(){
 
-        String filename = "myGames.properties";
+        String filename = "config.properties";
         String filePath = "C:\\Users\\s612564\\monCodeJava\\myGames\\src\\main\\resources\\";
 
         Path path;
@@ -134,6 +139,25 @@ public class Parametres {
     }
 
     /**
+     * getNbValeursPossibles() récupère le nombre de valeurs min et max possibles pour jouer
+     */
+    public void getNbValeursPossibles(){
+
+        if(parametresFichier.size() == 0)
+            return;
+
+        for(int i = 0 ; i < parametresFichier.size() ; i++)
+        {
+            if(parametresFichier.get(i).startsWith("nbValeursMin="))
+                nbValeursMinPossible = Integer.valueOf(parametresFichier.get(i).replace("nbValeursMin=", ""));
+            else if(parametresFichier.get(i).startsWith("nbValeursMax="))
+                nbValeursMaxPossible = Integer.valueOf(parametresFichier.get(i).replace("nbValeursMax=", ""));
+        }
+
+        //System.out.println("nb valeurs min possible : " + nbValeursMinPossible + " \\ nb valeurs max possible : " + nbValeursMaxPossible);
+    }
+
+    /**
      * getNbEssaisPossibles() récupère le nombre d'essais min et max possibles pour jouer
      */
     public void getNbEssaisPossibles(){
@@ -155,7 +179,7 @@ public class Parametres {
     /**
      * getRunMode() récupère le mode d'exécution du jeu (dev, debug, prod)
      */
-    public void getRunMode(){
+    public void readRunMode(){
 
         if(parametresFichier.size() == 0)
             return;
@@ -164,6 +188,11 @@ public class Parametres {
         {
             if(parametresFichier.get(i).startsWith("ModeRun="))
                 runMode = parametresFichier.get(i).replace("ModeRun=", "");
+        }
+
+        if(!Main.MODERUN.isEmpty()) {
+            runMode = Main.MODERUN;
+            return;
         }
 
         //System.out.println("RunMode : " + runMode);

@@ -2,6 +2,10 @@ package GLescroel.myGames;
 
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import static GLescroel.myGames.Tools.convertArrayToString;
+
 
 /**
  * Classe JoueurOrdi
@@ -10,9 +14,7 @@ import java.util.Random;
 public class JoueurOrdi extends Joueur {
 
     // CONSTRUCTOR
-    public JoueurOrdi(String nomJoueur) {
-        this.setEstHumain(false);
-        this.setNomJoueur(nomJoueur);
+    public JoueurOrdi() {
         setCombinaisonTrouvee(false);
     }
 
@@ -22,7 +24,7 @@ public class JoueurOrdi extends Joueur {
      * @return String[] combinaison définie par l'ordinateur
      */
     @Override
-    protected String[] joueurChoisitCombiSecrete(int nbDigit) {
+    protected String[] joueurChoisitCombiSecrete(int nbDigit, int nbValeur) {
         String[] selectedString = new String[nbDigit];
 
         for(int i = 0 ; i < nbDigit; i++) {
@@ -31,10 +33,11 @@ public class JoueurOrdi extends Joueur {
             selectedString[i] = String.valueOf(nbAleatoire);
         }
 
-        String affichage = "";
+        /*String affichage = "";
         for(int i = 0; i < nbDigit; i++)
-            affichage += selectedString[i];
-        System.out.println("(ordiValue : " + affichage + ")");
+            affichage += selectedString[i];*/
+        if (Parametres.getRunMode().equals("DEV"))
+            System.out.println("(ordiValue : " + convertArrayToString(selectedString) + ")");
 
         return selectedString;
     }
@@ -45,7 +48,7 @@ public class JoueurOrdi extends Joueur {
      * @return String[] une combinaison proposée par l'ordinateur
      */
     @Override
-    protected String[] joueurProposeCombi(int nbDigit) {
+    protected String[] joueurProposeCombi(int nbDigit, int nbValeur) {
         return new String[0];
     }
 
@@ -56,6 +59,7 @@ public class JoueurOrdi extends Joueur {
      */
     protected String[] ordiProposeCombiMasterMind(List<String[]> possibleTryList) {
 
+
         int[] minMax = {0, (possibleTryList.size()-1)};
         Random rand = new Random();
         //System.out.println("max : " + minMax[1] + " / min : " + minMax[0]);
@@ -63,13 +67,13 @@ public class JoueurOrdi extends Joueur {
 
         String[] value = possibleTryList.get(nbAleatoire);
 
-        String affichage = "";
+        /*String affichage = "";
         for(int i = 0 ; i < value.length ; i++)
-            affichage += value[i];
-        System.out.println("Proposition ordi : " + affichage);
+            affichage += value[i];*/
+        System.out.println("Proposition de l'ordinateur : " + convertArrayToString(value));
 
         return value;
-    }
+}
 
 
     /**
@@ -103,10 +107,10 @@ public class JoueurOrdi extends Joueur {
             selectedString[i] = String.valueOf(nbAleatoire);
         }
 
-        String affichage = "";
+        /*String affichage = "";
         for(int i = 0; i < nbDigit; i++)
-            affichage += selectedString[i];
-        System.out.println("ordiValue : " + affichage);
+            affichage += selectedString[i];*/
+        System.out.println("Proposition de l'ordinateur : " + convertArrayToString(selectedString));
 
         return selectedString;
     }

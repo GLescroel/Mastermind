@@ -12,8 +12,9 @@ public class Partie {
 
     private String nomJeu;
     private String mode;
-    private int nbEssai;
     private int nbDigit;
+    private int nbValeur;
+    private int nbEssai;
     private Parametres parametres;
 
     JoueurHumain joueur;
@@ -33,18 +34,24 @@ public class Partie {
      * startPartie() lance l'initialisation de la partie (choix utilisateur), l'initialisation des joueurs et lance le jeu
      */
     public void startPartie(){
-            initPartie();
-            initJoueurs();
-            runJeu();
+
+            do {
+                initPartie();
+                initJoueurs();
+
+                do {
+                    runJeu();
+                } while (Interaction.askYesNo("Voulez vous refaire la même partie ? O/N").equals("O"));
+
+            }while(Interaction.askYesNo("Voulez vous faire une autre partie ? O/N").equals("O"));
     }
 
     /**
      * initJoueurs() initialise le joueur humain et le joueur ordinateur
      */
     public void initJoueurs() {
-        joueur = new JoueurHumain(Interaction.askText("prénom"));
-        ordi = new JoueurOrdi("Ordi");
-
+        joueur = new JoueurHumain();
+        ordi = new JoueurOrdi();
     }
 
     /**
@@ -59,6 +66,11 @@ public class Partie {
         choisirJeu(parametres.getJeuxPossibles());
         choisirMode(parametres.getModesPossibles());
         choisirNbDigit(parametres.getNbDigitMinPossible(), parametres.getNbDigitMaxPossible());
+
+        if(nomJeu.equals(Jeu.nomMasterMind))
+            choisirNbValeur(parametres.getNbValeursMinPossible(), parametres.getNbValeursMaxPossible());
+        else nbValeur = 10;
+
         choisirNbEssai(parametres.getNbEssaisMinPossible(), parametres.getNbEssaisMaxPossible());
     }
 
@@ -72,10 +84,11 @@ public class Partie {
         for(int j = 0 ; j < listeJjeuxPossibles.size() ; j++)
             jeuxPossibles[j] = listeJjeuxPossibles.get(j);
 
-        int jeuChoisi = Interaction.askSomething("Partie", jeuxPossibles)-1;
+        int jeuChoisi = Interaction.askSomething("jeu", jeuxPossibles)-1;
         nomJeu = listeJjeuxPossibles.get(jeuChoisi);
 
         //System.out.println("jeux choisi : " + nomJeu);
+
     }
 
     /**
@@ -84,6 +97,7 @@ public class Partie {
      */
     public void choisirMode(List<String> listeModesPossibles)
     {
+
         String[] modesPossibles = new String[listeModesPossibles.size()];
         for(int j = 0 ; j < listeModesPossibles.size() ; j++)
             modesPossibles[j] = listeModesPossibles.get(j);
@@ -106,6 +120,17 @@ public class Partie {
     }
 
     /**
+     * choisirNbDigit() permet au joueur de choisir le nombre de caractère des combinaisons
+     * @param nbValeursMin nombre minimal valeurs possibles pour chaque caractère
+     * @param nbValeursMax nombre maximal valeurs possibles pour chaque caractère
+     */
+    public void choisirNbValeur(int nbValeursMin, int nbValeursMax)
+    {
+        nbValeur = Interaction.askQuantity("de valeurs possibles", nbValeursMin, nbValeursMax);
+        System.out.println("Nous allons donc jouer avec les chiffres entre 0 et " + (nbValeur-1));
+    }
+
+    /**
      * choisirNbEssai() permet au joueur de choisir le nombre d'essai max pour trouver la combinaison secrète
      * @param nbEssaisMin nombre minimal possible d'essais pour trouver la combinaison secrète
      * @param nbEssaisMax nombre minimal possible d'essais pour trouver la combinaison secrète
@@ -122,12 +147,12 @@ public class Partie {
      */
     public void runJeu() {
 
-        if(nomJeu.equals("MASTERMIND"))
+        if(nomJeu.equals(Jeu.nomMasterMind))
         {
-            Mastermind myMastermind = new Mastermind(nomJeu, joueur, ordi, mode, nbDigit, nbEssai);
+            Mastermind myMastermind = new Mastermind(nomJeu, joueur, ordi, mode, nbDigit, nbValeur, nbEssai);
             myMastermind.runMastermind();
         }
-        else if(nomJeu.equals("PLUSMOINS"))
+        else if(nomJeu.equals(Jeu.nomPlusMoins))
         {
             PlusMoins myPlusMoins = new PlusMoins(nomJeu, joueur, ordi, mode, nbDigit, nbEssai);
             myPlusMoins.runPlusMoins();

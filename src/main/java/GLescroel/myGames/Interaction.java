@@ -43,8 +43,10 @@ public class Interaction {
              responseIsGood = true;
              else responseIsGood = false;*/
 
-            if (responseIsGood == true)
-                System.out.println("Vous avez choisi comme " + category + " : " + responses[responseNb - 1]);
+            if (responseIsGood == true) {
+                if (Parametres.getRunMode().equals("DEV"))
+                    System.out.println("Vous avez choisi comme " + category + " : " + responses[responseNb - 1]);
+            }
             else {
                 boolean isVowel = "aeiouy".contains(Character.toString(category.charAt(0)));
                 if (isVowel)
@@ -86,23 +88,26 @@ public class Interaction {
              responseIsGood = true;
              else responseIsGood = false;*/
 
-            if (responseIsGood == true)
-                System.out.println("Vous avez choisi comme quantité " + requestedValue + " : " + responseNb);
-            else
-                System.out.println("Vous n'avez pas choisi le nombre " + requestedValue + " parmi les choix proposés");
+            if (Parametres.getRunMode().equals("DEV"))
+            {
+                if (responseIsGood == true)
+                    System.out.println("Vous avez choisi comme quantité " + requestedValue + " : " + responseNb);
+                else
+                    System.out.println("Vous n'avez pas choisi le nombre " + requestedValue + " parmi les choix proposés");
+            }
         } while (responseIsGood == false);
 
         return responseNb;
     }
 
     /**
-     * sakText() = demande à l'utilisateur de saisir un texte (prénom)
-     * @param category = texte demandé
+     * askYesNo() = demande à l'utilisateur une réponse par O ou N à une question
+     * @param question = question posée
      * @return String de la réponse
      */
-    public static String askText(String category) {
+    public static String askYesNo(String question) {
 
-        System.out.println("Choix du " + category);
+        System.out.println(question);
 
         String response="";
         boolean responseIsGood = false;
@@ -110,24 +115,15 @@ public class Interaction {
             Scanner sc = new Scanner(System.in);
             try {
                 response = sc.next();
-                responseIsGood = (response.length() > 0);
+                responseIsGood = (response.toUpperCase().equals("O") || response.toUpperCase().equals("N"));
             }catch (InputMismatchException exception){
                 System.out.println("Erreur de saisie");
                 sc.next();
                 responseIsGood = false;}
 
-            if (responseIsGood == true)
-                System.out.println("Vous avez choisi comme " + category + " : " + response);
-            else {
-                boolean isVowel = "aeiouy".contains(Character.toString(category.charAt(0)));
-                if (isVowel)
-                    System.out.println("Vous n'avez pas choisi d'" + category);
-                else
-                    System.out.println("Vous n'avez pas choisi de " + category);
-            }
         } while (responseIsGood == false);
 
-        return response;
+        return response.toUpperCase();
     }
 
     /**
@@ -136,10 +132,10 @@ public class Interaction {
      * @return String[] la combinaison saisie par le joueur
      * @see Joueur#joueurProposeCombi
      */
-    public static String[] askCombinaison(int nbDigit){
+    public static String[] askCombinaison(int nbDigit, int nbValeur){
         String[] enteredString = new String[nbDigit];
 
-        System.out.println("Saisissez une combinaison de " + nbDigit + " chiffres : " );
+        System.out.println("Saisissez une combinaison de " + nbDigit + " chiffres compris entre 0 et " + (nbValeur-1) + " :" );
 
         String responseNb="";
         boolean responseIsGood = false;
@@ -149,7 +145,7 @@ public class Interaction {
                 responseNb = sc.next();
 
                 // compilation de la regex
-                Pattern p = Pattern.compile("[0-9]{"+ nbDigit+"}");
+                Pattern p = Pattern.compile("[0-"+(nbValeur-1)+"]{"+ nbDigit+"}");
                 // création d'un moteur de recherche
                 Matcher m = p.matcher(responseNb);
                 // lancement de la recherche de toutes les occurrences
@@ -159,7 +155,8 @@ public class Interaction {
                     // pour chaque groupe (ici un seul possible car même longueur)
                     for(int i=0; i <= m.groupCount(); i++) {
                         // affichage de la sous-chaîne captu1rée
-                        System.out.println("Votre saisie   : " + m.group(i));
+                        if (Parametres.getRunMode().equals("DEV"))
+                            System.out.println("Votre saisie   : " + m.group(i));
                     }
                     for(int i=0; i <= (responseNb.length()-1); i++)
                         enteredString[i] = String.valueOf(responseNb.charAt(i));
@@ -175,6 +172,5 @@ public class Interaction {
         return enteredString;
 
     }
-
 
 }
