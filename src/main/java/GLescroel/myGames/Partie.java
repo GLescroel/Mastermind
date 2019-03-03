@@ -28,6 +28,14 @@ public class Partie {
     JoueurHumain joueur;
     JoueurOrdi ordi;
 
+    private final String[] suitePartie = {
+            "Rejouer la même partie",
+            "Lancer une nouvelle partie",
+            "Quitter"};
+    private final int rejouer = 0;
+    private final int nouvellePartie = 1;
+    private final int quitter = 2;
+
     public static final Logger myDevLogger = LogManager.getLogger(GLescroel.myGames.Partie.class.getName());
 
     /**
@@ -49,15 +57,24 @@ public class Partie {
     public void startPartie(){
         TRACE("Partie.startPartie()");
 
+        String suiteChoisie = "";
             do {
                 initPartie();
                 initJoueurs();
 
                 do {
                     runJeu();
-                } while (Interaction.askYesNo("Voulez vous refaire la même partie ? O/N").equals("O"));
 
-            }while(Interaction.askYesNo("Voulez vous faire une autre partie ? O/N").equals("O"));
+
+                    String demande = "\nLa partie est terminée\nQue vouhaitez vous faire maintenant ?";
+                    suiteChoisie = suitePartie[Interaction.askSomething(demande, suitePartie)-1];
+
+                } while (suiteChoisie.equals(suitePartie[rejouer]));
+
+            }while(suiteChoisie.equals(suitePartie[nouvellePartie]));
+
+        System.out.println("Merci d'avoir joué ! à bientôt !");
+
     }
 
     /**
@@ -102,7 +119,8 @@ public class Partie {
         for(int j = 0 ; j < listeJjeuxPossibles.size() ; j++)
             jeuxPossibles[j] = listeJjeuxPossibles.get(j);
 
-        int jeuChoisi = Interaction.askSomething("jeu", jeuxPossibles)-1;
+        String demande = "à quel jeu souhaitez vous jouer ?";
+        int jeuChoisi = Interaction.askSomething(demande, jeuxPossibles)-1;
         nomJeu = listeJjeuxPossibles.get(jeuChoisi);
 
         //DEBUG_DEV("jeux choisi : " + nomJeu);
@@ -119,7 +137,8 @@ public class Partie {
         for(int j = 0 ; j < listeModesPossibles.size() ; j++)
             modesPossibles[j] = listeModesPossibles.get(j);
 
-        int modeChoisi = Interaction.askSomething("Mode", modesPossibles)-1;
+        String demande = "\nDans quel mode souhaitez vous jouer ?";
+        int modeChoisi = Interaction.askSomething(demande, modesPossibles)-1;
         mode = listeModesPossibles.get(modeChoisi);
 
         //DEBUG_DEV("Mode choisi : " + mode);

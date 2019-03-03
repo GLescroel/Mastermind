@@ -18,19 +18,18 @@ public class Interaction {
 
     /**
      * ask someThing()
-     * @param category =  catégorie de la demande (jeu, mode)
+     * @param question =  catégorie de la demande (jeu, mode)
      * @param responses = la liste des réponses possibles
      * @return le numéro de la réponse dans la liste
      */
-    public static int askSomething(String category, String[] responses) {
+    public static int askSomething(String question, String[] responses) {
             TRACE("Interaction.askSomething()");
 
-        System.out.println("Choix du " + category);
+        System.out.println(question);
 
         for (int i = 1; i <= responses.length; i++)
             System.out.println(i + " - " + responses[i - 1]);
 
-        System.out.println("Que souhaitez vous comme " + category + "?");
 
         int responseNb=0;
         boolean responseIsGood = false;
@@ -48,16 +47,10 @@ public class Interaction {
              responseIsGood = true;
              else responseIsGood = false;*/
 
-            if (responseIsGood == true) {
-                DEBUG_DEV("Vous avez choisi comme " + category + " : " + responses[responseNb - 1]);
-            }
-            else {
-                boolean isVowel = "aeiouy".contains(Character.toString(category.charAt(0)));
-                if (isVowel)
-                    System.out.println("Vous n'avez pas choisi d'" + category + " parmi les choix proposés");
-                else
-                    System.out.println("Vous n'avez pas choisi de " + category + " parmi les choix proposés");
-            }
+            if (responseIsGood == true)
+                DEBUG_DEV("Vous avez choisi  : " + responses[responseNb - 1]);
+            else
+                System.out.println("Vous n'avez pas choisi parmi les choix proposés");
         } while (responseIsGood == false);
 
         return responseNb;
@@ -74,7 +67,7 @@ public class Interaction {
     public static int askQuantity(String requestedValue, int minValue, int maxValue) {
             TRACE("Interaction.askQuantity()");
 
-        System.out.println("Choix du nombre " + requestedValue + " entre " + minValue + " et " + maxValue);
+        System.out.println("\nChoix du nombre " + requestedValue + " entre " + minValue + " et " + maxValue);
         System.out.println("Avec combien " + requestedValue + " souhaitez vous jouer ?");
 
         int responseNb=0;
