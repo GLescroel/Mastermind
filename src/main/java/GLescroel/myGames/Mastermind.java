@@ -1,18 +1,17 @@
 package GLescroel.myGames;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static GLescroel.myGames.Tools.convertArrayToString;
+import static GLescroel.myGames.Log.DEBUG_DEV;
+import static GLescroel.myGames.Log.TRACE;
+import static GLescroel.myGames.Tools.*;
 
 /**
  * Classe Mastermind étend la Classe abstraite Jeu
  * contient le déroulé et les méthodes spécifiques du jeu MasterMind
  */
 public class Mastermind extends Jeu {
-
-    private List<String[]> listeDesPossibles = new ArrayList<>();
 
     /**
      * PlusMoins() constructor de la classe MasterMind
@@ -27,6 +26,7 @@ public class Mastermind extends Jeu {
     /////Constructor
     public Mastermind (String nomJeu, JoueurHumain joueur, JoueurOrdi ordi, String mode, int nbDigit, int nbValeur, int nbEssai) {
         super(nomJeu, joueur, ordi, mode, nbDigit, nbEssai);
+        TRACE("MasterMind() (constructor)");
         this.nbValeur = nbValeur;
     }
 
@@ -34,8 +34,7 @@ public class Mastermind extends Jeu {
      * runMasterMind() exécute le jeu MasterMind
       */
     public void runMastermind(){
-
-        System.out.println(nbValeur);
+        TRACE("MasterMind.runMasterMind()");
 
         if(mode.equals(modeDefenseur))
             runMasterMindDefenseur();
@@ -53,17 +52,18 @@ public class Mastermind extends Jeu {
      * L'ordinateur doit deviner la combinaison secrète du joueur
      */
     public void runMasterMindDefenseur(){
+        TRACE("MasterMind.runMasterMindDefenseur()");
 
         initListePossibles();
 
         joueur.setCombinaisonSecrete(joueur.joueurChoisitCombiSecrete(nbDigit, nbValeur));
 
-        String[] previousResult = new String[nbDigit];
+        ordi.setPreviousResult(new String[nbDigit]);
         int essai = 0;
         do {
-            String[] ordiProposition = ordi.ordiProposeCombiMasterMind(listeDesPossibles);
-            ordi.setCombinaisonTrouvee(evaluerMasterMindProposition(joueur.getCombinaisonSecrete(), ordiProposition, previousResult));
-            updateListeDesPossibles(ordiProposition, previousResult);
+            String[] ordiProposition = ordi.joueurProposeCombi(nomJeu, nbDigit, nbValeur);
+            ordi.setCombinaisonTrouvee(evaluerMasterMindProposition(joueur.getCombinaisonSecrete(), ordiProposition, ordi.getPreviousResult()));
+            updateListeDesPossibles(ordiProposition, ordi.getPreviousResult());
             essai++;
         } while (essai < nbEssai && !ordi.isCombinaisonTrouvee());
         System.out.println("Nombre de tentatives : " + essai);
@@ -75,12 +75,13 @@ public class Mastermind extends Jeu {
      * Le joueur doit deviner la combinaison secrète de l'ordinateur
      */
     public void runMasterMindChallenger() {
+        TRACE("MasterMind.runMasterMindChallenger()");
 
         ordi.setCombinaisonSecrete(ordi.joueurChoisitCombiSecrete(nbDigit, nbValeur));
 
         int essai = 0;
         do {
-            joueur.setCombinaisonTrouvee(evaluerMasterMindProposition(ordi.getCombinaisonSecrete(), joueur.joueurProposeCombi(nbDigit, nbValeur), null));
+            joueur.setCombinaisonTrouvee(evaluerMasterMindProposition(ordi.getCombinaisonSecrete(), joueur.joueurProposeCombi(nomJeu, nbDigit, nbValeur), null));
             essai++;
         } while (essai < nbEssai && !joueur.isCombinaisonTrouvee());
 
@@ -92,20 +93,21 @@ public class Mastermind extends Jeu {
      * Les joueurs ordinateur et humain doivent deviner la combinaison secrète de l'autre joueur en premier
      */
     public void runMasterMindDuel() {
+        TRACE("MasterMind.runMasterMindDuel()");
 
         initListePossibles();
 
         joueur.setCombinaisonSecrete(joueur.joueurChoisitCombiSecrete(nbDigit, nbValeur));
         ordi.setCombinaisonSecrete(ordi.joueurChoisitCombiSecrete(nbDigit, nbValeur));
 
-        String[] previousResult = new String[nbDigit];
+        ordi.setPreviousResult(new String[nbDigit]);
         int essai = 0;
         do {
-            joueur.setCombinaisonTrouvee(evaluerMasterMindProposition(ordi.getCombinaisonSecrete(), joueur.joueurProposeCombi(nbDigit, nbValeur), null));
+            joueur.setCombinaisonTrouvee(evaluerMasterMindProposition(ordi.getCombinaisonSecrete(), joueur.joueurProposeCombi(nomJeu, nbDigit, nbValeur), null));
 
-            String[] ordiProposition = ordi.ordiProposeCombiMasterMind(listeDesPossibles);
-            ordi.setCombinaisonTrouvee(evaluerMasterMindProposition(joueur.getCombinaisonSecrete(), ordiProposition, previousResult));
-            updateListeDesPossibles(ordiProposition, previousResult);
+            String[] ordiProposition = ordi.joueurProposeCombi(nomJeu, nbDigit, nbValeur);
+            ordi.setCombinaisonTrouvee(evaluerMasterMindProposition(joueur.getCombinaisonSecrete(), ordiProposition, ordi.getPreviousResult()));
+            updateListeDesPossibles(ordiProposition, ordi.getPreviousResult());
 
             essai++;
         } while (essai < nbEssai && !ordi.isCombinaisonTrouvee() && !joueur.isCombinaisonTrouvee());
@@ -118,6 +120,8 @@ public class Mastermind extends Jeu {
      * en base 10 et en fonction du nombre de caractères de la combinaison
      */
     public void initListePossibles(){
+        TRACE("MasterMind.initListePossibles()");
+
         String valueMaxString = "";
         for(int v = 0 ; v < nbDigit ; v++)
             valueMaxString += String.valueOf(nbValeur-1);
@@ -128,8 +132,9 @@ public class Mastermind extends Jeu {
         {
             boolean valueToAdd = true;
             String value = String.valueOf(choice);
-            //System.out.println("value = " + value);
+            //DEBUG_DEV("valeur max : " + value);
             String[] possibility = new String[nbDigit];
+
             for(int c = 1 ; c <= nbDigit ; c++)
             {
                 if(c <= value.length())
@@ -140,28 +145,19 @@ public class Mastermind extends Jeu {
                 if(Integer.valueOf(possibility[nbDigit - c]) >= nbValeur)
                     valueToAdd = false;
 
-                //System.out.println("possibility = " + possibility[nbCar-c]);
+                //DEBUG_DEV("possibility = " + possibility[nbDigit-c]);
             }
 
             if(valueToAdd == true)
-                listeDesPossibles.add(possibility);
+                ordi.addToTryList(possibility);
 
-            /*String aff = "";
-            for(int i = 0 ; i < nbCar ; i++)
-                aff += possibility[i];
-            System.out.println("résultat à ajouter : " + aff);*/
+            //DEBUG_DEV("résultat à ajouter : " + convertArrayToString(possibility));
         }
 
-        if (Parametres.getRunMode().equals("DEV"))
-            System.out.println("nb possibilités : " + listeDesPossibles.size());
-        /*String affichage = "";
-        for(int l = 0 ; l < tryList.size() ; l++)
-        {
-            affichage = "ajouté : ";
-            for(int c = 0 ; c < nbCar ; c++)
-                affichage += tryList.get(l)[c];
-            System.out.println(affichage);
-        }*/
+        DEBUG_DEV("nb possibilités : " + ordi.getTryList().size());
+
+        /*for(int l = 0 ; l < ordi.getTryList().size() ; l++)
+            DDEBUG_DEV("ajouté : " + convertArrayToString(ordi.getTryList().get(l)));*/
 
     }
 
@@ -173,14 +169,12 @@ public class Mastermind extends Jeu {
      * @return boolean allGood qui indique si tout est bien placé ou non
      */
     private boolean evaluerMasterMindProposition(String[] secretValue, String[] tryValue, String[] result) {
+        TRACE("MasterMind.evaluerMasterMindProposition()");
 
         boolean allGood = true;
         int nbGood = 0;
         int nbPresent = 0;
 
-        /*String secretValueString = "";
-        for(int c = 0 ; c < secretValue.length ; c++)
-            secretValueString += secretValue[c];*/
         String secretValueString = convertArrayToString(secretValue);
 
         for(int i = 0 ; i < tryValue.length; i++)
@@ -215,12 +209,13 @@ public class Mastermind extends Jeu {
      * @param previousResult le résultat de l'évaluation de cette proposition
      */
     public void updateListeDesPossibles(String[] ordiProposition, String[] previousResult) {
+        TRACE("MasterMind.updateListeDesPossibles()");
 
         List<Integer> indexToDelete = new CopyOnWriteArrayList<Integer>();
 
-        //System.out.println("liste des possible dans update = " + listeDesPossibles.size());
-        for(int proposal = 0 ; proposal < listeDesPossibles.size() ; proposal++) {
-            String[] thisProposal = listeDesPossibles.get(proposal);
+        //DEBUG_DEV("liste des possible dans update = " + listeDesPossibles.size());
+        for(int proposal = 0 ; proposal < ordi.getTryList().size() ; proposal++) {
+            String[] thisProposal = ordi.getTryList().get(proposal);
 
             if (thisProposal == ordiProposition)
                 indexToDelete.add(proposal);
@@ -238,7 +233,7 @@ public class Mastermind extends Jeu {
                     if (onePresent == true)
                         indexToDelete.add(proposal);
                 } else if (!previousResult[0].equals("0")) {
-                    //System.out.println("previousResult[0] : " + previousResult[0]);
+                    //DEBUG_DEV("previousResult[0] : " + previousResult[0]);
                     int nbPlaced = 0;
                     for (int c = 0; c < ordiProposition.length; c++)
                         if (thisProposal[c].equals(ordiProposition[c]))
@@ -249,9 +244,6 @@ public class Mastermind extends Jeu {
                     else {
                         if(!previousResult[1].equals("0"))
                         {
-                            /*String thisProposalString = "";
-                            for (int c = 0; c < thisProposal.length; c++)
-                                thisProposalString += thisProposal[c];*/
                             String thisProposalString = convertArrayToString(thisProposal);
 
                             int nbPresent = 0;
@@ -265,18 +257,12 @@ public class Mastermind extends Jeu {
                             if(nbPresent == 0)
                                 indexToDelete.add(proposal);
                         }
-                        /*String affiche = "";
-                        for (int c = 0; c < ordiProposition.length; c++)
-                            affiche += thisProposal[c];
-                        System.out.println("à conserver : " + affiche);*/
+                        //DEBUG_DEV("à conserver : " + convertArrayToString(thisProposal));
                     }
                 } else if (!previousResult[1].equals("0")) {
 
                     boolean proposalToDelete = false;
 
-                    /*String thisProposalString = "";
-                    for (int c = 0; c < thisProposal.length; c++)
-                        thisProposalString += thisProposal[c];*/
                     String thisProposalString = convertArrayToString(thisProposal);
 
                     for (int c = 0; c < ordiProposition.length; c++) {
@@ -300,17 +286,13 @@ public class Mastermind extends Jeu {
 
         for(int deletion = (indexToDelete.size()-1) ; deletion >= 0 ; deletion--)
         {
-            String local_aff = "";
-            for(int a = 0 ; a < listeDesPossibles.get(deletion).length ; a++)
-                local_aff += listeDesPossibles.get(deletion)[a];
-            //System.out.println("deletion : " +local_aff);
-
-            listeDesPossibles.remove(indexToDelete.get(deletion).intValue());
+            //DEBUG_DEV("deletion : " +convertArrayToString(ordi.getTryList().get(deletion));
+            ordi.removeFromTryList(indexToDelete.get(deletion).intValue());
         }
 
         if (Parametres.getRunMode().equals("DEV")){
             System.out.println("nb deletions : " + indexToDelete.size());
-            System.out.println("nb possibles restants : " + listeDesPossibles.size());
+            System.out.println("nb possibles restants : " + ordi.getTryList().size());
         }
     }
 

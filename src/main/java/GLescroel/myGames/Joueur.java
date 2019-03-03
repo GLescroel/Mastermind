@@ -12,7 +12,7 @@ public abstract class Joueur {
     private boolean combinaisonTrouvee;
 
     protected abstract String[] joueurChoisitCombiSecrete(int nbDigit, int nbValeur);
-    protected abstract String[] joueurProposeCombi(int nbDigit, int nbValeur);
+    protected abstract String[] joueurProposeCombi(String nomJeu, int nbDigit, int nbValeur);
 
 
 

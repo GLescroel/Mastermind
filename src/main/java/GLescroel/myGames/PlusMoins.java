@@ -1,9 +1,6 @@
 package GLescroel.myGames;
 
-
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
+import static GLescroel.myGames.Log.TRACE;
 
 /**
  * Classe PlusMoins étend la classe abstraite Jeu
@@ -22,12 +19,14 @@ public class PlusMoins extends Jeu {
     //// Constructor
     public PlusMoins (String nomJeu, JoueurHumain joueur, JoueurOrdi ordi, String mode, int nbDigit, int nbEssai) {
         super(nomJeu, joueur, ordi, mode, nbDigit, nbEssai);
+        TRACE("PlusMoins() (constructor)");
     }
 
     /**
      * runPlusMoins() lance le jeu PlusMoins dans le mode choisi
      */
     public void runPlusMoins(){
+        TRACE("PlusMoins.runPlusMoins()");
 
         if(mode.equals(modeDefenseur))
             runPlusMoinsDefenseur();
@@ -44,16 +43,16 @@ public class PlusMoins extends Jeu {
      * runPlusMoinsDefenseur() exécute le jeu PlusMoins dans le mode défenseur
      */
     public void runPlusMoinsDefenseur() {
+        TRACE("PlusMoins.runPlusMoinsDefenseur()");
 
         joueur.setCombinaisonSecrete(joueur.joueurChoisitCombiSecrete(nbDigit, 10));
 
-        List<String[]> TryList = new CopyOnWriteArrayList<String[]>();
-        String[] previousResult = new String[nbDigit];
+        ordi.setPreviousResult(new String[nbDigit]);
 
         int essai = 0;
         do {
-            TryList.add(ordi.ordiProposeCombiPlusMoins(TryList, previousResult, nbDigit));
-            ordi.setCombinaisonTrouvee(evaluerPlusMoinsProposition(joueur.getCombinaisonSecrete(), TryList.get(essai), previousResult));
+            ordi.addToTryList(ordi.joueurProposeCombi( nomJeu, nbDigit, 10));
+            ordi.setCombinaisonTrouvee(evaluerPlusMoinsProposition(joueur.getCombinaisonSecrete(), ordi.getTryList().get(essai), ordi.getPreviousResult()));
             essai++;
         } while (essai < nbEssai && !ordi.isCombinaisonTrouvee());
         System.out.println("Nombre de tentatives : " + essai);
@@ -64,12 +63,13 @@ public class PlusMoins extends Jeu {
      * runPlusMoinsChallenger() exécute le jeu PlusMoins dans le mode Challenger
      */
     public void runPlusMoinsChallenger() {
+        TRACE("PlusMoins.runPlusMoinsChallenger()");
 
         ordi.setCombinaisonSecrete(ordi.joueurChoisitCombiSecrete(nbDigit, 10));
 
         int essai = 0;
         do {
-            joueur.setCombinaisonTrouvee(evaluerPlusMoinsProposition(ordi.getCombinaisonSecrete(), joueur.joueurProposeCombi(nbDigit, 10), null));
+            joueur.setCombinaisonTrouvee(evaluerPlusMoinsProposition(ordi.getCombinaisonSecrete(), joueur.joueurProposeCombi(nomJeu, nbDigit, 10), null));
             essai++;
         } while (essai < nbEssai && !joueur.isCombinaisonTrouvee());
         System.out.println("Nombre de tentatives : " + essai);
@@ -80,19 +80,18 @@ public class PlusMoins extends Jeu {
      * runPlusMoinsDuel() exécute le jeu PlusMoins dans le mode duel
      */
     public void runPlusMoinsDuel() {
+        TRACE("PlusMoins.runPlusDuel()");
 
         joueur.setCombinaisonSecrete(joueur.joueurChoisitCombiSecrete(nbDigit, 10));
         ordi.setCombinaisonSecrete(ordi.joueurChoisitCombiSecrete(nbDigit, 10));
 
-        List<String[]> TryList = new CopyOnWriteArrayList<String[]>();
-        String[] previousResult = new String[nbDigit];
-
+        ordi.setPreviousResult(new String[nbDigit]);
         int essai = 0;
         do {
-            joueur.setCombinaisonTrouvee(evaluerPlusMoinsProposition(ordi.getCombinaisonSecrete(), joueur.joueurProposeCombi(nbDigit, 10), null));
+            joueur.setCombinaisonTrouvee(evaluerPlusMoinsProposition(ordi.getCombinaisonSecrete(), joueur.joueurProposeCombi(nomJeu, nbDigit, 10), null));
 
-            TryList.add(ordi.ordiProposeCombiPlusMoins(TryList, previousResult, nbDigit));
-            ordi.setCombinaisonTrouvee(evaluerPlusMoinsProposition(joueur.getCombinaisonSecrete(), TryList.get(essai), previousResult));
+            ordi.addToTryList(ordi.joueurProposeCombi(nomJeu, nbDigit, nbValeur));
+            ordi.setCombinaisonTrouvee(evaluerPlusMoinsProposition(joueur.getCombinaisonSecrete(), ordi.getTryList().get(essai), ordi.getPreviousResult()));
 
             essai++;
         } while (essai < nbEssai && !joueur.isCombinaisonTrouvee() && !ordi.isCombinaisonTrouvee());
@@ -109,6 +108,7 @@ public class PlusMoins extends Jeu {
      * @return boolean qui indique si le joueur ou l'ordinateur a trouvé ou non
      */
     public static boolean evaluerPlusMoinsProposition(String[] secretValue, String[] tryValue, String[] tryResult) {
+        TRACE("PlusMoins.evaluerPlusMoinsProposition()");
 
         String tryResultString = "";
         String resultatCaractere ="";

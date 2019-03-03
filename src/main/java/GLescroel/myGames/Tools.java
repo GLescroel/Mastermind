@@ -1,5 +1,7 @@
 package GLescroel.myGames;
 
+import static GLescroel.myGames.Log.TRACE;
+
 public class Tools {
 
     /**
@@ -8,6 +10,8 @@ public class Tools {
      * @return String converted = la valeur convertie en String
      */
     public static String convertArrayToString(String[] toConvert){
+        TRACE("Tools.convertArrayToString()");
+
         String converted = "";
         for(int c = 0 ; c < toConvert.length ; c++)
             converted+= toConvert[c];

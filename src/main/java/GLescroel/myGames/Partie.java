@@ -1,6 +1,14 @@
 package GLescroel.myGames;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.List;
+
+import static GLescroel.myGames.Log.TRACE;
+import static GLescroel.myGames.Main.MODERUN;
+import static GLescroel.myGames.Main.myLogger;
+import static GLescroel.myGames.Parametres.runModeDebug;
 
 /**
  * Classe Partie
@@ -20,11 +28,16 @@ public class Partie {
     JoueurHumain joueur;
     JoueurOrdi ordi;
 
+    public static final Logger myDevLogger = LogManager.getLogger(GLescroel.myGames.Partie.class.getName());
+
     /**
      * Constructor de la classe Partie
      * lance la récupération des paramètres du fichier paramètres
      */
     public Partie() {
+        if(MODERUN.equals(runModeDebug))
+            myLogger.trace("----------Partie() (constructor)----------");
+
         parametres = new Parametres();
         parametres.runInit();
     }
@@ -34,6 +47,7 @@ public class Partie {
      * startPartie() lance l'initialisation de la partie (choix utilisateur), l'initialisation des joueurs et lance le jeu
      */
     public void startPartie(){
+        TRACE("Partie.startPartie()");
 
             do {
                 initPartie();
@@ -50,6 +64,8 @@ public class Partie {
      * initJoueurs() initialise le joueur humain et le joueur ordinateur
      */
     public void initJoueurs() {
+        TRACE("Partie.initJoueurs()");
+
         joueur = new JoueurHumain();
         ordi = new JoueurOrdi();
     }
@@ -62,6 +78,7 @@ public class Partie {
      * @see Partie#choisirNbEssai
      */
     public void initPartie(){
+        TRACE("Partie.initPartie()");
 
         choisirJeu(parametres.getJeuxPossibles());
         choisirMode(parametres.getModesPossibles());
@@ -78,8 +95,9 @@ public class Partie {
      * choisirJeu() permet au joueur de choisir le jeu auquel il souhaite jouer
      * @param listeJjeuxPossibles liste des jeux possibles à proposer au joueur
      */
-    public void choisirJeu(List<String> listeJjeuxPossibles)
-    {
+    public void choisirJeu(List<String> listeJjeuxPossibles) {
+        TRACE("Partie.choisirJeu()");
+
         String[] jeuxPossibles = new String[listeJjeuxPossibles.size()];
         for(int j = 0 ; j < listeJjeuxPossibles.size() ; j++)
             jeuxPossibles[j] = listeJjeuxPossibles.get(j);
@@ -87,16 +105,15 @@ public class Partie {
         int jeuChoisi = Interaction.askSomething("jeu", jeuxPossibles)-1;
         nomJeu = listeJjeuxPossibles.get(jeuChoisi);
 
-        //System.out.println("jeux choisi : " + nomJeu);
-
+        //DEBUG_DEV("jeux choisi : " + nomJeu);
     }
 
     /**
      * choisirMode() permet au joueur de choisir le mode dans lequel il souhaite jouer
      * @param listeModesPossibles liste des modes de jeu possibles
      */
-    public void choisirMode(List<String> listeModesPossibles)
-    {
+    public void choisirMode(List<String> listeModesPossibles) {
+        TRACE("Partie.choisirMode()");
 
         String[] modesPossibles = new String[listeModesPossibles.size()];
         for(int j = 0 ; j < listeModesPossibles.size() ; j++)
@@ -105,7 +122,7 @@ public class Partie {
         int modeChoisi = Interaction.askSomething("Mode", modesPossibles)-1;
         mode = listeModesPossibles.get(modeChoisi);
 
-        //System.out.println("Mode choisi : " + mode);
+        //DEBUG_DEV("Mode choisi : " + mode);
     }
 
     /**
@@ -113,10 +130,11 @@ public class Partie {
      * @param nbDigitMin nombre minimal possible de caractères des combinaisons
      * @param nbDigitMax nombre maximal possible de caractères des combinaisons
      */
-    public void choisirNbDigit(int nbDigitMin, int nbDigitMax)
-    {
+    public void choisirNbDigit(int nbDigitMin, int nbDigitMax) {
+        TRACE("Partie.choisirNbDigit()");
+
         nbDigit = Interaction.askQuantity("de digit", nbDigitMin, nbDigitMax);
-        //System.out.println("Nb digit choisi : " + nbDigit);
+        //DEBUG_DEV("Nb digit choisi : " + nbDigit);
     }
 
     /**
@@ -124,8 +142,9 @@ public class Partie {
      * @param nbValeursMin nombre minimal valeurs possibles pour chaque caractère
      * @param nbValeursMax nombre maximal valeurs possibles pour chaque caractère
      */
-    public void choisirNbValeur(int nbValeursMin, int nbValeursMax)
-    {
+    public void choisirNbValeur(int nbValeursMin, int nbValeursMax) {
+        TRACE("Partie.choisirNbValeur()");
+
         nbValeur = Interaction.askQuantity("de valeurs possibles", nbValeursMin, nbValeursMax);
         System.out.println("Nous allons donc jouer avec les chiffres entre 0 et " + (nbValeur-1));
     }
@@ -135,10 +154,11 @@ public class Partie {
      * @param nbEssaisMin nombre minimal possible d'essais pour trouver la combinaison secrète
      * @param nbEssaisMax nombre minimal possible d'essais pour trouver la combinaison secrète
      */
-    public void choisirNbEssai(int nbEssaisMin, int nbEssaisMax)
-    {
+    public void choisirNbEssai(int nbEssaisMin, int nbEssaisMax) {
+        TRACE("Partie.choisirNbEssai()");
+
         nbEssai = Interaction.askQuantity("d'essais", nbEssaisMin, nbEssaisMax);
-        //System.out.println("Nb essais choisi : " + nbEssai);
+        //DEBUG_DEV("Nb essais choisi : " + nbEssai);
     }
 
 
@@ -146,6 +166,7 @@ public class Partie {
      * runJeu() lance le jeu choisi dans le mode choisi avec les paramètres choisis
      */
     public void runJeu() {
+        TRACE("Partie.runJeu()");
 
         if(nomJeu.equals(Jeu.nomMasterMind))
         {

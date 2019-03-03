@@ -6,6 +6,10 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static GLescroel.myGames.Log.DEBUG_DEV;
+import static GLescroel.myGames.Log.TRACE;
+
+
 /**
  * Classe Interaction
  * contient des fonctions "outils" pour gérer les interactions avec l'utilisateur, notamment ses saisies attendues
@@ -19,8 +23,9 @@ public class Interaction {
      * @return le numéro de la réponse dans la liste
      */
     public static int askSomething(String category, String[] responses) {
+            TRACE("Interaction.askSomething()");
 
-                System.out.println("Choix du " + category);
+        System.out.println("Choix du " + category);
 
         for (int i = 1; i <= responses.length; i++)
             System.out.println(i + " - " + responses[i - 1]);
@@ -44,8 +49,7 @@ public class Interaction {
              else responseIsGood = false;*/
 
             if (responseIsGood == true) {
-                if (Parametres.getRunMode().equals("DEV"))
-                    System.out.println("Vous avez choisi comme " + category + " : " + responses[responseNb - 1]);
+                DEBUG_DEV("Vous avez choisi comme " + category + " : " + responses[responseNb - 1]);
             }
             else {
                 boolean isVowel = "aeiouy".contains(Character.toString(category.charAt(0)));
@@ -68,6 +72,7 @@ public class Interaction {
      * @return le nombre saisi par le joueur
      */
     public static int askQuantity(String requestedValue, int minValue, int maxValue) {
+            TRACE("Interaction.askQuantity()");
 
         System.out.println("Choix du nombre " + requestedValue + " entre " + minValue + " et " + maxValue);
         System.out.println("Avec combien " + requestedValue + " souhaitez vous jouer ?");
@@ -88,13 +93,11 @@ public class Interaction {
              responseIsGood = true;
              else responseIsGood = false;*/
 
-            if (Parametres.getRunMode().equals("DEV"))
-            {
-                if (responseIsGood == true)
-                    System.out.println("Vous avez choisi comme quantité " + requestedValue + " : " + responseNb);
-                else
-                    System.out.println("Vous n'avez pas choisi le nombre " + requestedValue + " parmi les choix proposés");
-            }
+            if (responseIsGood == true)
+                DEBUG_DEV("Vous avez choisi comme quantité " + requestedValue + " : " + responseNb);
+            else
+                System.out.println("Vous n'avez pas choisi le nombre " + requestedValue + " parmi les choix proposés");
+
         } while (responseIsGood == false);
 
         return responseNb;
@@ -106,6 +109,7 @@ public class Interaction {
      * @return String de la réponse
      */
     public static String askYesNo(String question) {
+            TRACE("Interaction.askYesNo()");
 
         System.out.println(question);
 
@@ -129,10 +133,13 @@ public class Interaction {
     /**
      * askCombinaison() demande au joueur de saisir une combinaison numérique de longueur nbDigit
      * @param nbDigit nombre de caractères de la combinaison
+     * @param nbValeur nombre de valeurs possibles pour chaque caractère de la combinaison
      * @return String[] la combinaison saisie par le joueur
      * @see Joueur#joueurProposeCombi
      */
     public static String[] askCombinaison(int nbDigit, int nbValeur){
+            TRACE("Interaction.askCombinaison()");
+
         String[] enteredString = new String[nbDigit];
 
         System.out.println("Saisissez une combinaison de " + nbDigit + " chiffres compris entre 0 et " + (nbValeur-1) + " :" );
@@ -155,8 +162,7 @@ public class Interaction {
                     // pour chaque groupe (ici un seul possible car même longueur)
                     for(int i=0; i <= m.groupCount(); i++) {
                         // affichage de la sous-chaîne captu1rée
-                        if (Parametres.getRunMode().equals("DEV"))
-                            System.out.println("Votre saisie   : " + m.group(i));
+                        DEBUG_DEV("Votre saisie   : " + m.group(i));
                     }
                     for(int i=0; i <= (responseNb.length()-1); i++)
                         enteredString[i] = String.valueOf(responseNb.charAt(i));

@@ -1,5 +1,6 @@
 package GLescroel.myGames;
 
+import static GLescroel.myGames.Log.TRACE;
 import static GLescroel.myGames.Tools.convertArrayToString;
 
 /**
@@ -25,11 +26,11 @@ public abstract class Jeu{
 
 
     //// Constructor
-    public Jeu(String nomJeu, JoueurHumain joueur, JoueurOrdi ordi, String mode, int nbDigit, /*int nbValeur,*/ int nbEssai) {
+    public Jeu(String nomJeu, JoueurHumain joueur, JoueurOrdi ordi, String mode, int nbDigit, int nbEssai) {
+        TRACE("Jeu() (constructor)");
         this.nomJeu = nomJeu;
         this.mode = mode;
         this.nbDigit = nbDigit;
-        //this.nbValeur = nbValeur;
         this.nbEssai = nbEssai;
         this.joueur = joueur;
         this.ordi = ordi;
@@ -43,8 +44,6 @@ public abstract class Jeu{
     public void setMode(String mode) { this.mode = mode; }
     public int getNbDigit() { return nbDigit; }
     public void setNbDigit(int nbDigit) { this.nbDigit = nbDigit; }
-//    public int getNbValeur() { return nbValeur; }
-//    public void setNbValeur(int nbValeur) { this.nbValeur = nbValeur; }
     public int getNbEssai() { return nbEssai; }
     public void setNbEssai(int nbEssai) { this.nbEssai = nbEssai; }
     public JoueurOrdi getOrdi() { return ordi; }
@@ -55,6 +54,7 @@ public abstract class Jeu{
     //////////////////// fin GETTER & SETTER//////////////////////////////////////////////////////////
 
     protected void affichageResultat(JoueurHumain joueur, JoueurOrdi ordi, String mode) {
+        TRACE("Jeu.affichageResultat()");
 
         if(mode.equals(modeChallenger))
         {
