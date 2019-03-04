@@ -168,7 +168,7 @@ public class Mastermind extends Jeu {
      * @param result résultat de l'évaluation (nb bien placés, nb présents mal placés)
      * @return boolean allGood qui indique si tout est bien placé ou non
      */
-    private boolean evaluerMasterMindProposition(String[] secretValue, String[] tryValue, String[] result) {
+    boolean evaluerMasterMindProposition(String[] secretValue, String[] tryValue, String[] result) {
         TRACE("MasterMind.evaluerMasterMindProposition()");
 
         boolean allGood = true;
