@@ -211,6 +211,8 @@ public class Partie {
     public void setNbEssai(int nbEssai) { this.nbEssai = nbEssai; }
     public int getNbDigit() { return nbDigit; }
     public void setNbDigit(int nbDigit) { this.nbDigit = nbDigit; }
+    public int getNbValeur() { return nbValeur; }
+    public void setNbValeur(int nbValeur) { this.nbValeur = nbValeur; }
     /////////////// fin GETTER & SETTER //////////////////////////////
 
 }

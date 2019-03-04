@@ -14,6 +14,7 @@ public abstract class Jeu{
     protected int nbDigit;
     protected int nbValeur;
     protected int nbEssai;
+
     protected JoueurOrdi ordi;
     protected JoueurHumain joueur;
 
@@ -46,6 +47,8 @@ public abstract class Jeu{
     public void setNbDigit(int nbDigit) { this.nbDigit = nbDigit; }
     public int getNbEssai() { return nbEssai; }
     public void setNbEssai(int nbEssai) { this.nbEssai = nbEssai; }
+    public int getNbValeur() { return nbValeur; }
+    public void setNbValeur(int nbValeur) { this.nbValeur = nbValeur; }
     public JoueurOrdi getOrdi() { return ordi; }
     public void setOrdi(JoueurOrdi ordi) { this.ordi = ordi; }
     public JoueurHumain getJoueur() { return joueur; }
