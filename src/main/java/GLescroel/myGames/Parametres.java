@@ -2,6 +2,7 @@ package GLescroel.myGames;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -68,15 +69,15 @@ public class Parametres {
     /**
      * getParameters() récupère toutes les lignes du fichier paramètres
      */
-    public void getParameters(){
+    public void getParameters() {
         if(MODERUN.equals(runModeDebug))
             myLogger.trace("----------Parametres.getParameters()----------");
 
         String filename = "config.properties";
-        String filePath = "C:\\Users\\s612564\\monCodeJava\\myGames\\src\\main\\resources\\";
+        String filepath = "src\\main\\resources\\";
 
         Path path;
-        path = Paths.get((filePath+filename));
+        path = Paths.get(filepath+filename);
 
         try {
             parametresFichier = Files.readAllLines(path);
