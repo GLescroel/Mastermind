@@ -119,7 +119,7 @@ public class Mastermind extends Jeu {
      * initListePossibles() crée la liste de toutes les combinaisons MAsterMind possibles
      * en base 10 et en fonction du nombre de caractères de la combinaison
      */
-    public void initListePossibles(){
+    private void initListePossibles(){
         TRACE("MasterMind.initListePossibles()");
 
         String valueMaxString = "";
@@ -209,7 +209,7 @@ public class Mastermind extends Jeu {
      * @param ordiProposition la proposition de l'ordinateur
      * @param previousResult le résultat de l'évaluation de cette proposition
      */
-    public void updateListeDesPossibles(String[] ordiProposition, String[] previousResult) {
+    private void updateListeDesPossibles(String[] ordiProposition, String[] previousResult) {
         TRACE("MasterMind.updateListeDesPossibles()");
 
         List<Integer> indexToDelete = new CopyOnWriteArrayList<Integer>();

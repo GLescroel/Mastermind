@@ -155,7 +155,7 @@ public class Interaction {
                     // pour chaque groupe (ici un seul possible car même longueur)
                     for(int i=0; i <= m.groupCount(); i++) {
                         // affichage de la sous-chaîne captu1rée
-                        DEBUG_DEV("Votre saisie   : " + m.group(i));
+                        System.out.println("Votre saisie   : " + m.group(i));
                     }
                     for(int i=0; i <= (responseNb.length()-1); i++)
                         enteredString[i] = String.valueOf(responseNb.charAt(i));

@@ -79,7 +79,7 @@ public class JoueurOrdi extends Joueur {
      * ordiProposeCombiMasterMind() permet à l'ordinateur de proposer une combinaison au jeu du MAsterMind
      * @return String[] combinaison Mastermind proposée par l'ordinateur
      */
-    protected String[] ordiProposeCombiMasterMind() {
+    private String[] ordiProposeCombiMasterMind() {
         TRACE("joueurOrdi.ordiProposeCombiMasterMind()");
 
         if(tryList.size() == 0)
@@ -104,7 +104,7 @@ public class JoueurOrdi extends Joueur {
      * @param nbDigit = longueur de la combinaison
      * @return String[] la nouvelle proposition de type PlusMoins de l'ordinateur
      */
-    protected String[] ordiProposeCombiPlusMoins(int nbDigit) {
+    private String[] ordiProposeCombiPlusMoins(int nbDigit) {
         TRACE("joueurOrdi.ordiProposeCombiPlusMoins()");
 
         String[] selectedString = new String[nbDigit];
