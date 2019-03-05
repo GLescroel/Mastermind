@@ -56,6 +56,8 @@ public abstract class Jeu{
 
     //////////////////// fin GETTER & SETTER//////////////////////////////////////////////////////////
 
+    protected abstract boolean evaluerProposition(String[] secretValue, String[] tryValue, String[] result);
+
     protected void affichageResultat(JoueurHumain joueur, JoueurOrdi ordi, String mode) {
         TRACE("Jeu.affichageResultat()");
 

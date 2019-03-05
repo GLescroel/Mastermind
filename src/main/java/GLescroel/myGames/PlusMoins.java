@@ -52,7 +52,7 @@ public class PlusMoins extends Jeu {
         int essai = 0;
         do {
             ordi.addToTryList(ordi.joueurProposeCombi( nomJeu, nbDigit, 10));
-            ordi.setCombinaisonTrouvee(evaluerPlusMoinsProposition(joueur.getCombinaisonSecrete(), ordi.getTryList().get(essai), ordi.getPreviousResult()));
+            ordi.setCombinaisonTrouvee(evaluerProposition(joueur.getCombinaisonSecrete(), ordi.getTryList().get(essai), ordi.getPreviousResult()));
             essai++;
         } while (essai < nbEssai && !ordi.isCombinaisonTrouvee());
         System.out.println("Nombre de tentatives : " + essai);
@@ -69,7 +69,7 @@ public class PlusMoins extends Jeu {
 
         int essai = 0;
         do {
-            joueur.setCombinaisonTrouvee(evaluerPlusMoinsProposition(ordi.getCombinaisonSecrete(), joueur.joueurProposeCombi(nomJeu, nbDigit, 10), null));
+            joueur.setCombinaisonTrouvee(evaluerProposition(ordi.getCombinaisonSecrete(), joueur.joueurProposeCombi(nomJeu, nbDigit, 10), null));
             essai++;
         } while (essai < nbEssai && !joueur.isCombinaisonTrouvee());
         System.out.println("Nombre de tentatives : " + essai);
@@ -88,10 +88,10 @@ public class PlusMoins extends Jeu {
         ordi.setPreviousResult(new String[nbDigit]);
         int essai = 0;
         do {
-            joueur.setCombinaisonTrouvee(evaluerPlusMoinsProposition(ordi.getCombinaisonSecrete(), joueur.joueurProposeCombi(nomJeu, nbDigit, 10), null));
+            joueur.setCombinaisonTrouvee(evaluerProposition(ordi.getCombinaisonSecrete(), joueur.joueurProposeCombi(nomJeu, nbDigit, 10), null));
 
             ordi.addToTryList(ordi.joueurProposeCombi(nomJeu, nbDigit, nbValeur));
-            ordi.setCombinaisonTrouvee(evaluerPlusMoinsProposition(joueur.getCombinaisonSecrete(), ordi.getTryList().get(essai), ordi.getPreviousResult()));
+            ordi.setCombinaisonTrouvee(evaluerProposition(joueur.getCombinaisonSecrete(), ordi.getTryList().get(essai), ordi.getPreviousResult()));
 
             essai++;
         } while (essai < nbEssai && !joueur.isCombinaisonTrouvee() && !ordi.isCombinaisonTrouvee());
@@ -101,14 +101,15 @@ public class PlusMoins extends Jeu {
     }
 
     /**
-     * evaluerPlusMoinsProposition() évalue la combinaison proposée par l'ordinateur ou le joueur
+     * evaluerProposition() évalue la combinaison proposée par l'ordinateur ou le joueur
      * @param secretValue du joueur ou de l'ordinateur
      * @param tryValue la proposition du joueur ou de l'ordinateur
      * @param tryResult l'évaluation à mettre à jour pour l'ordinateur
      * @return boolean qui indique si le joueur ou l'ordinateur a trouvé ou non
      */
-    public static boolean evaluerPlusMoinsProposition(String[] secretValue, String[] tryValue, String[] tryResult) {
-        TRACE("PlusMoins.evaluerPlusMoinsProposition()");
+    @Override
+    protected boolean evaluerProposition(String[] secretValue, String[] tryValue, String[] tryResult) {
+        TRACE("PlusMoins.evaluerProposition()");
 
         String tryResultString = "";
         String resultatCaractere ="";

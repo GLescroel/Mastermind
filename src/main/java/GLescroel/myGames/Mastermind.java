@@ -62,7 +62,7 @@ public class Mastermind extends Jeu {
         int essai = 0;
         do {
             String[] ordiProposition = ordi.joueurProposeCombi(nomJeu, nbDigit, nbValeur);
-            ordi.setCombinaisonTrouvee(evaluerMasterMindProposition(joueur.getCombinaisonSecrete(), ordiProposition, ordi.getPreviousResult()));
+            ordi.setCombinaisonTrouvee(evaluerProposition(joueur.getCombinaisonSecrete(), ordiProposition, ordi.getPreviousResult()));
             updateListeDesPossibles(ordiProposition, ordi.getPreviousResult());
             essai++;
         } while (essai < nbEssai && !ordi.isCombinaisonTrouvee());
@@ -81,7 +81,7 @@ public class Mastermind extends Jeu {
 
         int essai = 0;
         do {
-            joueur.setCombinaisonTrouvee(evaluerMasterMindProposition(ordi.getCombinaisonSecrete(), joueur.joueurProposeCombi(nomJeu, nbDigit, nbValeur), null));
+            joueur.setCombinaisonTrouvee(evaluerProposition(ordi.getCombinaisonSecrete(), joueur.joueurProposeCombi(nomJeu, nbDigit, nbValeur), null));
             essai++;
         } while (essai < nbEssai && !joueur.isCombinaisonTrouvee());
 
@@ -103,10 +103,10 @@ public class Mastermind extends Jeu {
         ordi.setPreviousResult(new String[nbDigit]);
         int essai = 0;
         do {
-            joueur.setCombinaisonTrouvee(evaluerMasterMindProposition(ordi.getCombinaisonSecrete(), joueur.joueurProposeCombi(nomJeu, nbDigit, nbValeur), null));
+            joueur.setCombinaisonTrouvee(evaluerProposition(ordi.getCombinaisonSecrete(), joueur.joueurProposeCombi(nomJeu, nbDigit, nbValeur), null));
 
             String[] ordiProposition = ordi.joueurProposeCombi(nomJeu, nbDigit, nbValeur);
-            ordi.setCombinaisonTrouvee(evaluerMasterMindProposition(joueur.getCombinaisonSecrete(), ordiProposition, ordi.getPreviousResult()));
+            ordi.setCombinaisonTrouvee(evaluerProposition(joueur.getCombinaisonSecrete(), ordiProposition, ordi.getPreviousResult()));
             updateListeDesPossibles(ordiProposition, ordi.getPreviousResult());
 
             essai++;
@@ -162,14 +162,15 @@ public class Mastermind extends Jeu {
     }
 
     /**
-     * evaluerMasterMindProposition() évalue la proposition MasterMind en fonction de la combinaison secrète
+     * evaluerProposition() évalue la proposition MasterMind en fonction de la combinaison secrète
      * @param secretValue combinaison secrète du défenseur
      * @param tryValue combinaison proposée par le challenger
      * @param result résultat de l'évaluation (nb bien placés, nb présents mal placés)
      * @return boolean allGood qui indique si tout est bien placé ou non
      */
-    public static boolean evaluerMasterMindProposition(String[] secretValue, String[] tryValue, String[] result) {
-        TRACE("MasterMind.evaluerMasterMindProposition()");
+    @Override
+    protected boolean evaluerProposition(String[] secretValue, String[] tryValue, String[] result) {
+        TRACE("MasterMind.evaluerProposition()");
 
         boolean allGood = true;
         int nbGood = 0;
