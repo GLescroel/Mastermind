@@ -291,7 +291,7 @@ public class Mastermind extends Jeu {
             ordi.removeFromTryList(indexToDelete.get(deletion).intValue());
         }
 
-        if (Parametres.getRunMode().equals("DEV")){
+        if (Parametres.getRunMode().equals(Parametres.runModeDev)){
             System.out.println("nb deletions : " + indexToDelete.size());
             System.out.println("nb possibles restants : " + ordi.getTryList().size());
         }
