@@ -1,11 +1,11 @@
 package GLescroel.myGames;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Properties;
 
 import static GLescroel.myGames.Log.TRACE;
 import static GLescroel.myGames.Main.MODERUN;
@@ -16,7 +16,8 @@ import static GLescroel.myGames.Main.myLogger;
  */
 public class Parametres {
 
-    private List<String> parametresFichier = new ArrayList<String>();
+    private Properties myProperties = new Properties();
+
     private List<String> jeuxPossibles = new ArrayList<String>();
     private List<String> modesPossibles = new ArrayList<String>();
     private int nbDigitMinPossible;
@@ -72,21 +73,22 @@ public class Parametres {
         if(MODERUN.equals(runModeDebug))
             myLogger.trace("----------Parametres.getParameters()----------");
 
-        String filename = "config.properties";
-        String filepath = "src\\main\\resources\\";
-
-        Path path;
-        path = Paths.get(filepath+filename);
-
-        try {
-            parametresFichier = Files.readAllLines(path);
-        } catch (IOException e) {
-            System.out.println("Problème de lecture du fichier paramètres");
-            e.printStackTrace();
+        InputStream myConfigFile = null;
+        ClassLoader Loader = Thread.currentThread().getContextClassLoader();
+        try{
+            myConfigFile = Loader.getResourceAsStream ("config.properties");
+            myProperties.load(myConfigFile);
+        }catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (myConfigFile != null) {
+                try {
+                    myConfigFile.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-
-        if(parametresFichier.size() == 0)
-            throw new IllegalStateException("Le fichier paramètres est vide !");
     }
 
     /**
@@ -95,13 +97,11 @@ public class Parametres {
     public void getListeJeuxPossibles(){
         TRACE("Parametres.getListeJeuxPossibles()");
 
-        if(parametresFichier.size() == 0)
-            return;
-
-        for(int i = 0 ; i < parametresFichier.size() ; i++)
-        {
-            if(parametresFichier.get(i).startsWith("Game="))
-                jeuxPossibles.add(parametresFichier.get(i).replace("Game=", ""));
+        Enumeration<?> myPropertiesContaint = myProperties.keys();
+        while (myPropertiesContaint.hasMoreElements()) {
+            String cle = (String) myPropertiesContaint.nextElement();
+            if(cle.contains("Jeu"))
+            jeuxPossibles.add(myProperties.getProperty(cle));
         }
     }
 
@@ -111,15 +111,12 @@ public class Parametres {
     public void getListeModesPossibles(){
         TRACE("Parametres.getListeModesPossibles()");
 
-        if(parametresFichier.size() == 0)
-            return;
-
-        for(int i = 0 ; i < parametresFichier.size() ; i++)
-        {
-            if(parametresFichier.get(i).startsWith("Mode="))
-                modesPossibles.add(parametresFichier.get(i).replace("Mode=", ""));
+        Enumeration<?> myPropertiesContaint = myProperties.keys();
+        while (myPropertiesContaint.hasMoreElements()) {
+            String cle = (String) myPropertiesContaint.nextElement();
+            if(cle.startsWith("Mode"))
+                modesPossibles.add(myProperties.getProperty(cle));
         }
-
     }
 
     /**
@@ -128,16 +125,8 @@ public class Parametres {
     public void getNbDigitPossibles(){
         TRACE("Parametres.getNbDigitPossibles()");
 
-        if(parametresFichier.size() == 0)
-            return;
-
-        for(int i = 0 ; i < parametresFichier.size() ; i++)
-        {
-            if(parametresFichier.get(i).startsWith("nbDIGITmin="))
-                nbDigitMinPossible = Integer.valueOf(parametresFichier.get(i).replace("nbDIGITmin=", ""));
-            else if(parametresFichier.get(i).startsWith("nbDIGITmax="))
-                nbDigitMaxPossible = Integer.valueOf(parametresFichier.get(i).replace("nbDIGITmax=", ""));
-        }
+        nbDigitMinPossible = Integer.valueOf(myProperties.getProperty("nbDIGITmin"));
+        nbDigitMaxPossible = Integer.valueOf(myProperties.getProperty("nbDIGITmax"));
 
     }
 
@@ -147,16 +136,8 @@ public class Parametres {
     public void getNbValeursPossibles(){
          TRACE("Parametres.getNbValeursPossibles()");
 
-        if(parametresFichier.size() == 0)
-            return;
-
-        for(int i = 0 ; i < parametresFichier.size() ; i++)
-        {
-            if(parametresFichier.get(i).startsWith("nbValeursMin="))
-                nbValeursMinPossible = Integer.valueOf(parametresFichier.get(i).replace("nbValeursMin=", ""));
-            else if(parametresFichier.get(i).startsWith("nbValeursMax="))
-                nbValeursMaxPossible = Integer.valueOf(parametresFichier.get(i).replace("nbValeursMax=", ""));
-        }
+        nbValeursMinPossible = Integer.valueOf(myProperties.getProperty("nbValeursMin"));
+        nbValeursMaxPossible = Integer.valueOf(myProperties.getProperty("nbValeursMax"));
 
     }
 
@@ -166,16 +147,8 @@ public class Parametres {
     public void getNbEssaisPossibles(){
         TRACE("Parametres.getNbEssaisPossibles()");
 
-        if(parametresFichier.size() == 0)
-            return;
-
-        for(int i = 0 ; i < parametresFichier.size() ; i++)
-        {
-            if(parametresFichier.get(i).startsWith("nbEssaisMin="))
-                nbEssaisMinPossible = Integer.valueOf(parametresFichier.get(i).replace("nbEssaisMin=", ""));
-            else if(parametresFichier.get(i).startsWith("nbEssaisMax="))
-                nbEssaisMaxPossible = Integer.valueOf(parametresFichier.get(i).replace("nbEssaisMax=", ""));
-        }
+        nbEssaisMinPossible = Integer.valueOf(myProperties.getProperty("nbEssaisMin"));
+        nbEssaisMaxPossible = Integer.valueOf(myProperties.getProperty("nbEssaisMax"));
 
     }
 
@@ -186,16 +159,10 @@ public class Parametres {
         if(MODERUN.equals(runModeDebug))
             myLogger.trace("----------Parametres.getRunMode()----------");
 
-        for(int i = 0 ; i < parametresFichier.size() ; i++)
-        {
-            if(parametresFichier.get(i).startsWith("ModeRun="))
-                runMode = parametresFichier.get(i).replace("ModeRun=", "");
-        }
+        runMode = myProperties.getProperty("runMode");
 
-        if(!MODERUN.isEmpty()) {
+        if(!MODERUN.isEmpty())
             runMode = MODERUN;
-            return;
-        }
 
     }
 
