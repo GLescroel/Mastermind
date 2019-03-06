@@ -19,7 +19,7 @@ public class Log {
         if(Parametres.getRunMode().equals(runModeDebug) ||
                 (MODERUN.equals(runModeDebug)) ||
                 (MODERUN.isEmpty() && Parametres.getRunMode().isEmpty())){
-            myLogger.trace("----------Tools.TRACE()----------");
+            myLogger.trace("----------Log.TRACE()----------");
             myLogger.trace("----------" + trace + "----------");
         }
     }
@@ -32,7 +32,7 @@ public class Log {
         if(Parametres.getRunMode().equals(runModeDebug) ||
                 (MODERUN.equals(runModeDebug)) ||
                 (MODERUN.isEmpty() && Parametres.getRunMode().isEmpty())){
-            myLogger.trace("----------Tools.DEBUG()----------");
+            myLogger.trace("----------Log.DEBUG()----------");
             myLogger.debug(debug);
         }
     }
@@ -42,7 +42,7 @@ public class Log {
      * @param debug_affiche = le debug à lggger
      */
     public static void DEBUG_DEV(String debug_affiche){
-        TRACE("Tools.DEBUG()");
+        TRACE("Log.DEBUG_DEV()");
         if(Parametres.getRunMode().equals(runModeDev)) {
             myDevLogger.debug(debug_affiche);
         }
